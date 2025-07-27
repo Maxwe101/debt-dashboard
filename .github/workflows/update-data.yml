@@ -29,12 +29,17 @@ jobs:
       # Step 4: Run the update scripts
       - name: Run update_data.py
         run: |
-          # Always run the daily (US) update
-          python update_data.py daily
-          # Only run the monthly (Euro) update on the 1st day of the month
-          if [ $(date +'%d') -eq 01 ]; then
-            echo "It's the first of the month, running Euro update..."
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Manual trigger detected. Updating all data sources..."
+            python update_data.py daily
             python update_data.py monthly
+          else
+            echo "Scheduled trigger detected. Running scheduled updates..."
+            python update_data.py daily
+            if [ $(date +'%d') -eq 01 ]; then
+              echo "It's the first of the month, running Euro update..."
+              python update_data.py monthly
+            fi
           fi
 
       # Step 5: Commit the new cache files back to the repository
