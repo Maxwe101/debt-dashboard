@@ -1,0 +1,42 @@
+name: Update Data Cache Files
+
+on:
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
+  schedule:
+    - cron: '0 8 * * *' # Runs every day at 8:00 UTC (for the daily US update)
+
+jobs:
+  update-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out your repository's code
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install the required libraries
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Step 4: Run the update scripts
+      - name: Run update_data.py
+        run: |
+          # Always run the daily (US) update
+          python update_data.py daily
+          # Only run the monthly (Euro) update on the 1st day of the month
+          if [ $(date +'%d') -eq 01 ]; then
+            echo "It's the first of the month, running Euro update..."
+            python update_data.py monthly
+          fi
+
+      # Step 5: Commit the new cache files back to the repository
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Automated data cache update"
+          file_pattern: "*.pkl"
