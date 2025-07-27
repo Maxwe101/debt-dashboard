@@ -1,0 +1,10 @@
+pandas
+requests
+python-dotenv
+matplotlib
+flask
+plotly
+ecbdata
+kaleido
+pandasdmx
+gunicorn
