@@ -6,7 +6,7 @@ import pandasdmx as sdmx
 import time
 from dotenv import load_dotenv
 
-# --- CONFIGURATION (Copied from the main script) ---
+# --- CONFIGURATION ---
 EURO_COUNTRIES = {'DE': 'Germany', 'IT': 'Italy', 'FR': 'France'}
 EURO_TENORS = {'Up to 1Y': 'S', '1Y-2Y': 'Y12', '2Y-5Y': 'Y25', '5Y-10Y': 'Y5A', '10Y+': 'YA_'}
 EURO_FLOW_ID = 'CSEC'
@@ -112,14 +112,11 @@ def update_euro_cache():
 # --- MAIN EXECUTION BLOCK ---
 # ==============================================================================
 if __name__ == "__main__":
-    # This part decides which data to update based on command line arguments
-    # This allows the scheduler to call the same script for daily or monthly tasks
     if len(sys.argv) > 1 and sys.argv[1] == 'daily':
         update_us_cache()
     elif len(sys.argv) > 1 and sys.argv[1] == 'monthly':
         update_euro_cache()
     else:
-        # If run with no arguments, update everything
         print("Updating all data sources...")
         update_us_cache()
         update_euro_cache()
