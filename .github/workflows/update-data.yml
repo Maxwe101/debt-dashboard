@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 8 * * *' # Runs every day at 8:00 UTC (for the daily US update)
 
+permissions:
+  contents: write
+
 jobs:
   update-and-commit:
     runs-on: ubuntu-latest
